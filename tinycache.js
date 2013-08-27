@@ -10,53 +10,69 @@ var TinyCache = function() {
     return self;
 }
 
-TinyCache.prototype.put = function(key, value, time) {
+TinyCache.prototype.put = function( key, value, time ) {
     var self = this;
-    if (self.debug) console.log('caching: '+key+' = '+value+' (@'+time+')');
-    var oldRecord = self.cache[key];
-    if (oldRecord) {
-        clearTimeout(oldRecord.timeout);
+
+    if ( self.cache[ key ] )
+    {
+        clearTimeout( self.cache[ key ].timeout );
     }
 
     var expire = time + now();
-    var record = {value: value, expire: expire};
+    var record = {
+        value: value,
+        expire: expire
+    };
 
-    if (!isNaN(expire)) {
-        (function() {
+    if ( !isNaN( expire ) )
+    {
+        ( function() {
             var _self = self;
-            var timeout = setTimeout(function() {
-                _self.del(key);
-            }, time);
+            var timeout = setTimeout( function() {
+                _self.del( key );
+            }, time );
             record.timeout = timeout;
-        })();
+        } )();
     }
 
-    self.cache[key] = record;
+    self.cache[ key ] = record;
 }
 
 TinyCache.prototype.del = function(key) {
     var self = this;
-    delete self.cache[key];
+
+    if ( self.cache[ key ] )
+    {
+        clearTimeout( self.cache[ key ].timeout );
+    }
+
+    delete self.cache[ key ];
 }
 
 TinyCache.prototype.clear = function() {
     var self = this;
+
+    for( var key in self.cache ) {
+        clearTimeout( self.cache[ key ].timeout );
+    }
+    
     self.cache = {};
 }
 
 TinyCache.prototype.get = function(key) {
     var self = this;
-    var data = self.cache[key];
-    if (typeof data != "undefined") {
-        if (isNaN(data.expire) || data.expire >= now()) {
-            if (self.debug) self.hitCount++;
-            return data.value;
+    var record = self.cache[ key ];
+    if ( typeof record != "undefined" )
+    {
+        if ( isNaN( record.expire ) || record.expire >= now() )
+        {
+            self.debug && ++self.hitCount;
+            return record.value;
         }
         else
         {
-            // free some space
-            if (self.debug) self.missCount++;
-            self.del(key);
+            self.debug && ++self.missCount;
+            self.del( key );
         }
     }
     return null;
@@ -65,10 +81,10 @@ TinyCache.prototype.get = function(key) {
 TinyCache.prototype.size = function() {
     var self = this;
     var size = 0, key;
-    for (key in self.cache) {
-        if (self.cache.hasOwnProperty(key))
+    for ( key in self.cache ) {
+        if ( self.cache.hasOwnProperty( key ) )
         {
-            if (self.get(key) !== null)
+            if ( self.get( key ) !== null )
             {
                 size++;
             }
@@ -80,8 +96,8 @@ TinyCache.prototype.size = function() {
 TinyCache.prototype.memsize = function() {
     var self = this;
     var size = 0, key;
-    for (key in self.cache) {
-        if (self.cache.hasOwnProperty(key))
+    for ( key in self.cache ) {
+        if ( self.cache.hasOwnProperty( key ) )
         {
             size++;
         }
