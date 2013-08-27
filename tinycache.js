@@ -1,4 +1,7 @@
 function now() { return (new Date).getTime(); }
+function expired( record ) {
+    return record.expire && record.expire < now();
+}
 
 var TinyCache = function() {
     var self = this;
@@ -18,13 +21,12 @@ TinyCache.prototype.put = function( key, value, time ) {
         clearTimeout( self.cache[ key ].timeout );
     }
 
-    var expire = time + now();
     var record = {
         value: value,
-        expire: expire
+        expire: time ? ( time + now() ) : null
     };
 
-    if ( !isNaN( expire ) )
+    if ( record.expire )
     {
         ( function() {
             var _self = self;
@@ -40,13 +42,18 @@ TinyCache.prototype.put = function( key, value, time ) {
 
 TinyCache.prototype.del = function(key) {
     var self = this;
-
-    if ( self.cache[ key ] )
+    var record = self.cache[ key ];
+    
+    if ( !record )
     {
-        clearTimeout( self.cache[ key ].timeout );
+        return false;
     }
-
+    
+    clearTimeout( record.timeout );
+    
+    var isExpired = expired( record );
     delete self.cache[ key ];
+    return !isExpired;
 }
 
 TinyCache.prototype.clear = function() {
@@ -64,7 +71,7 @@ TinyCache.prototype.get = function(key) {
     var record = self.cache[ key ];
     if ( typeof record != "undefined" )
     {
-        if ( isNaN( record.expire ) || record.expire >= now() )
+        if ( !expired( record ) )
         {
             self.debug && ++self.hitCount;
             return record.value;
