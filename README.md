@@ -39,7 +39,7 @@ A simple, small (~100 lines) in-memory cache for node.js or the browser (~1.5KB 
 
 #### Using Component (http://component.io)
 
-    component install tinycache
+    component install andyburke/tinycache
     
     ...
     
