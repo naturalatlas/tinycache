@@ -1,7 +1,7 @@
 # tinycache
 [![NPM version](https://badge.fury.io/js/tinycache.png)](http://badge.fury.io/js/tinycache)
-[![Build Status](https://travis-ci.org/andyburke/tinycache.png?branch=master)](https://travis-ci.org/andyburke/tinycache)
-[![Coverage Status](https://coveralls.io/repos/andyburke/tinycache/badge.png)](https://coveralls.io/r/andyburke/tinycache)
+[![Build Status](https://travis-ci.org/naturalatlas/tinycache.png?branch=master)](https://travis-ci.org/naturalatlas/tinycache)
+[![Coverage Status](https://coveralls.io/repos/naturalatlas/tinycache/badge.png)](https://coveralls.io/r/naturalatlas/tinycache)
 
 A simple, small (~100 lines) in-memory cache for node.js or the browser (~1.5KB minified).
 
