@@ -9,7 +9,7 @@ var TinyCache = function() {
     self.debug = false;
     self.hitCount = 0;
     self.missCount = 0;
-    
+
     return self;
 }
 
@@ -43,14 +43,14 @@ TinyCache.prototype.put = function( key, value, time ) {
 TinyCache.prototype.del = function(key) {
     var self = this;
     var record = self.cache[ key ];
-    
+
     if ( !record )
     {
         return false;
     }
-    
+
     clearTimeout( record.timeout );
-    
+
     var isExpired = expired( record );
     delete self.cache[ key ];
     return !isExpired;
@@ -62,7 +62,7 @@ TinyCache.prototype.clear = function() {
     for( var key in self.cache ) {
         clearTimeout( self.cache[ key ].timeout );
     }
-    
+
     self.cache = {};
 }
 
@@ -73,15 +73,13 @@ TinyCache.prototype.get = function(key) {
     {
         if ( !expired( record ) )
         {
-            self.debug && ++self.hitCount;
+            ++self.hitCount;
             return record.value;
-        }
-        else
-        {
-            self.debug && ++self.missCount;
+        } else {
             self.del( key );
         }
     }
+    ++self.missCount;
     return null;
 }
 
