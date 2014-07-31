@@ -104,6 +104,19 @@ var suite = function(cache) {
 		});
 	});
 
+	describe('del()', function() {
+		it('should remove object', function() {
+			var key = new_key();
+			var val = 1;
+			var size = cache.size();
+			cache.put(key, val, 100);
+			assert.equal(cache.get(key), val);
+			cache.del(key);
+			assert.isNull(cache.get(key));
+			assert.equal(cache.size(), size);
+		});
+	});
+
 	describe('hits()', function() {
 		it('should return number of cache hits', function() {
 			var key = new_key();
